@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import TodoInputsSection from './TodoInputsSection';
 import TodoEntry from './TodoEntry';
+import stateChangeManager from './StateChangeManager';
 
 class App extends Component {
   constructor() {
@@ -17,83 +18,36 @@ class App extends Component {
     this.handleTodoDeleteClick = this.handleTodoDeleteClick.bind(this);
     this.handleTodoInputKeyUp = this.handleTodoInputKeyUp.bind(this);
     this.handleTodoInputSubmit = this.handleTodoInputSubmit.bind(this);
-    this.handleTodoMouseOver = this.handleTodoMouseOver.bind(this);
-    this.handleTodoMouseOut = this.handleTodoMouseOut.bind(this);
-  }
-
-  refreshAppState(todosCopy, editing = null, inputValue = '') {
-    const todoInput = document.getElementById('todo-input');
-    this.setState({
-      todos: todosCopy,
-      editing: editing,
-      inputValue: inputValue,
-    });
-
-    todoInput.focus();
   }
 
   handleInputChange(evt) {
     let value = evt.target.value;
-    this.setState({
-      inputValue: value,
-    });
+    this.setState(stateChangeManager.updateInputValue(value));
   }
 
   handleTodoEditClick(index) {
-    let todosCopy = this.state.todos.slice();
-    todosCopy.forEach(item => item.isEditing = false);
-    todosCopy[index].isEditing = true;
-    this.refreshAppState(todosCopy, {
-      index: index,
-    }, todosCopy[index].name);
+    const todoInput = document.getElementById('todo-input');
+    this.setState(stateChangeManager.editTodo(index), () => todoInput.focus());
   }
 
   handleTodoDeleteClick(index) {
-    let todosCopy = this.state.todos.slice();
-    if (window.confirm(`Are you sure you want to delete TODO: "${todosCopy[index].name}"?`)) {
-      todosCopy.splice(index, 1);
-      this.refreshAppState(todosCopy);
-    }
+    const todoInput = document.getElementById('todo-input');
+    this.setState(stateChangeManager.deleteTodo(index), () => todoInput.focus());
   }
 
   handleTodoInputKeyUp(evt) {
 
   }
 
-  handleTodoInputSubmit(evt) {
+  handleTodoInputSubmit() {
     const todoInput = document.getElementById('todo-input');
     let value = todoInput.value;
     if (value === '') {
       alert(':::Please suplly a Todo text.');
     } else {
-      let todosCopy = this.state.todos.slice();
-      if (this.state.editing && (this.state.editing.index || this.state.editing.index >= 0)) {
-        todosCopy[this.state.editing.index].name = value;
-        todosCopy[this.state.editing.index].isEditing = false;
-      } else {
-        todosCopy.push({
-          name: value,
-          isEditing: false,
-        });
-      }
-      
       todoInput.value = '';
-      this.refreshAppState(todosCopy);
+      this.setState(stateChangeManager.addTodo(value), () => todoInput.focus())
     }
-    
-    todoInput.focus();
-  }
-
-  handleTodoMouseOver(evt) {
-    let target = evt.target;
-    let actions = target.querySelector('div.todo-actions') || (target.nextSibling ? target.nextSibling.closest('div.todo-actions') : null);
-    if (actions) actions.style.display = 'block';
-  }
-
-  handleTodoMouseOut(evt) {
-    let target = evt.target;
-    let actions = target.querySelector('div.todo-actions') || (target.nextSibling ? target.nextSibling.closest('div.todo-actions') : null);
-    if (actions) actions.style.display = 'none';
   }
 
   render() {
@@ -104,8 +58,6 @@ class App extends Component {
           key={ index }
           onEditClick={ () => this.handleTodoEditClick(index) }
           onDeleteClick={ () => this.handleTodoDeleteClick(index) }
-          onMouseOver={ this.handleTodoMouseOver }
-          onMouseOut={ this.handleTodoMouseOut }
           background={ index % 2 === 0 ? '#bababa' : '#ffffff' }
           isEditing={ item.isEditing }
         />
