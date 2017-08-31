@@ -1,5 +1,5 @@
 import React from 'react';
-import './todo-inputs-section.css'
+import '../css/todo-inputs-section.css'
 
 function TodoInputsSection(props) {
   return (

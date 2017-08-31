@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../css/App.css';
 import TodoInputsSection from './TodoInputsSection';
 import TodoEntry from './TodoEntry';
 import stateChangeManager from './StateChangeManager';
