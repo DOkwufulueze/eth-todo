@@ -1,62 +1,63 @@
+import TodoStore from './TodoStore';
+
 let stateChangeManager = null;
 
 class StateChangeManager {
   constructor() {
     stateChangeManager = stateChangeManager ? stateChangeManager : this;
+    stateChangeManager.state = this.getAppNewState();
   }
 
-  getAppNewState(todosCopy, editing = null, inputValue = '') {
-    const newState = {
-      todos: todosCopy,
-      editing: editing,
-      inputValue: inputValue,
-    };
-
-    return newState;
-  }
-
-  addTodo(value) {
-    return (state, props) => {
-      let todosCopy = state.todos.slice();
-      if (state.editing && (state.editing.index || state.editing.index >= 0)) {
-        todosCopy[state.editing.index].name = value;
-        todosCopy[state.editing.index].isEditing = false;
-      } else {
-        todosCopy.push({
-          name: value,
-          isEditing: false,
-        });
-      }
-
-      return this.getAppNewState(todosCopy);
-    }
+  getAppNewState() {
+    return TodoStore.getState();
   }
 
   updateInputValue(value) {
-    return {
-      inputValue: value,
-    };
+    TodoStore.dispatch({
+      type: 'Type todo',
+      name: value,
+    });
+
+    return this.getAppNewState();
+  }
+
+  addTodo(value) {
+    TodoStore.dispatch({
+      type: 'Add todo',
+      todo: {
+        name: value,
+        isEditing: false,
+      },
+    });
+
+    return this.getAppNewState();
+  }
+
+  updateTodo(value) {
+    TodoStore.dispatch({
+      type: 'Update todo',
+      name: value,
+    });
+
+    return this.getAppNewState();
   }
 
   editTodo(index) {
-    return (state, props) => {
-      let todosCopy = state.todos.slice();
-      todosCopy.forEach(item => item.isEditing = false);
-      todosCopy[index].isEditing = true;
-      return this.getAppNewState(todosCopy, {
-        index: index,
-      }, todosCopy[index].name);
-    };
+    TodoStore.dispatch({
+      type: 'Edit todo',
+      index: index,
+    });
+
+    return this.getAppNewState();
   }
 
   deleteTodo(index) {
-    return (state, props) => {
-      let todosCopy = state.todos.slice();
-      if (window.confirm(`Are you sure you want to delete TODO: "${todosCopy[index].name}"?`)) {
-        todosCopy.splice(index, 1);
-        return this.getAppNewState(todosCopy);
-      }
-    };
+    TodoStore.dispatch({
+      type: 'Delete todo',
+      index: index,
+    });
+
+    return this.getAppNewState();
   }
 }
 

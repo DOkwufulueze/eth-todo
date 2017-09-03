@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import web3 from 'web3';
 import '../css/App.css';
 import TodoInputsSection from './TodoInputsSection';
 import TodoEntry from './TodoEntry';
@@ -7,17 +8,17 @@ import stateChangeManager from './StateChangeManager';
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      todos: [],
-      editing: null,
-      inputValue: '',
-    };
-
+    this.state = stateChangeManager.state;
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleTodoEditClick = this.handleTodoEditClick.bind(this);
     this.handleTodoDeleteClick = this.handleTodoDeleteClick.bind(this);
     this.handleTodoInputKeyUp = this.handleTodoInputKeyUp.bind(this);
-    this.handleTodoInputSubmit = this.handleTodoInputSubmit.bind(this);
+    this.getAppropriateInputSubmitHandler = this.getAppropriateInputSubmitHandler.bind(this);
+    this.handleTodoInsertion = this.handleTodoInsertion.bind(this);
+    this.handleTodoUpdate = this.handleTodoUpdate.bind(this);
+    this.focusTodoInput = this.focusTodoInput.bind(this);
+    this.refreshTodoInput = this.refreshTodoInput.bind(this);
+    this.web3 = new web3(new web3.providers.HttpProvider('http://localhost:3000'));
   }
 
   handleInputChange(evt) {
@@ -26,28 +27,52 @@ class App extends Component {
   }
 
   handleTodoEditClick(index) {
-    const todoInput = document.getElementById('todo-input');
-    this.setState(stateChangeManager.editTodo(index), () => todoInput.focus());
+    this.setState(stateChangeManager.editTodo(index), this.focusTodoInput);
   }
 
   handleTodoDeleteClick(index) {
-    const todoInput = document.getElementById('todo-input');
-    this.setState(stateChangeManager.deleteTodo(index), () => todoInput.focus());
+    this.setState(stateChangeManager.deleteTodo(index), this.focusTodoInput);
   }
 
   handleTodoInputKeyUp(evt) {
 
   }
 
-  handleTodoInputSubmit() {
-    const todoInput = document.getElementById('todo-input');
-    let value = todoInput.value;
+  handleTodoInsertion() {
+    const TODO_INPUT = document.getElementById('todo-input');
+    let value = TODO_INPUT.value;
     if (value === '') {
       alert(':::Please suplly a Todo text.');
     } else {
-      todoInput.value = '';
-      this.setState(stateChangeManager.addTodo(value), () => todoInput.focus())
+      this.setState(stateChangeManager.addTodo(value), this.refreshTodoInput);
     }
+  }
+
+  handleTodoUpdate() {
+    const TODO_INPUT = document.getElementById('todo-input');
+    let value = TODO_INPUT.value;
+    if (value === '') {
+      alert(':::Please suplly a Todo text.');
+    } else {
+      this.setState(stateChangeManager.updateTodo(value), this.refreshTodoInput);
+    }
+  }
+
+  getAppropriateInputSubmitHandler() {
+    this.state.editing && (this.state.editing.index || this.state.editing.index >= 0)
+    ? this.handleTodoUpdate()
+    : this.handleTodoInsertion();
+  }
+
+  refreshTodoInput() {
+    const TODO_INPUT = document.getElementById('todo-input');
+    TODO_INPUT.value = '';
+    TODO_INPUT.focus();
+  }
+
+  focusTodoInput() {
+    const TODO_INPUT = document.getElementById('todo-input');
+    TODO_INPUT.focus();
   }
 
   render() {
@@ -69,7 +94,7 @@ class App extends Component {
           <TodoInputsSection
             onInputChange={ this.handleInputChange }
             onKeyUp={ this.handleTodoInputKeyUp }
-            onClick={ this.handleTodoInputSubmit }
+            onClick={ this.getAppropriateInputSubmitHandler }
             editing={ this.state.editing }
             inputValue={ this.state.inputValue }
           />
