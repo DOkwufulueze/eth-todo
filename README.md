@@ -1,3 +1,5 @@
-# todo
+# eth-todo
 
-Todo application on ReactJS -- Functional setState used all-through.
+Ethereum Blockchain Todo application on ReactJS -- Functional setState used all-through.
+
+States managed by Redux.
