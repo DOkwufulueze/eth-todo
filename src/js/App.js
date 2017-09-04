@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import web3 from 'web3';
+// import web3Manager from './Web3Manager';
 import '../css/App.css';
 import TodoInputsSection from './TodoInputsSection';
 import TodoEntry from './TodoEntry';
@@ -8,7 +8,7 @@ import stateChangeManager from './StateChangeManager';
 class App extends Component {
   constructor() {
     super();
-    this.state = stateChangeManager.state;
+    this.state = stateChangeManager.appState;
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleTodoEditClick = this.handleTodoEditClick.bind(this);
     this.handleTodoDeleteClick = this.handleTodoDeleteClick.bind(this);
@@ -18,7 +18,6 @@ class App extends Component {
     this.handleTodoUpdate = this.handleTodoUpdate.bind(this);
     this.focusTodoInput = this.focusTodoInput.bind(this);
     this.refreshTodoInput = this.refreshTodoInput.bind(this);
-    this.web3 = new web3(new web3.providers.HttpProvider('http://localhost:3000'));
   }
 
   handleInputChange(evt) {
@@ -90,6 +89,14 @@ class App extends Component {
     });
     return (
       <div className="App">
+        <div className='eth-info'>
+          <div className='eth-network'>
+            <div className='key'>Eth Network:</div><div className='value'>{ this.props.network }</div>
+          </div>
+          <div className='eth-address'>
+            <div className='key'>Eth Address:</div><div className='value'>{ this.props.address }</div>
+          </div>
+        </div>
         <div className="row">
           <TodoInputsSection
             onInputChange={ this.handleInputChange }

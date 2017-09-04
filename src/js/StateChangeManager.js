@@ -5,11 +5,17 @@ let stateChangeManager = null;
 class StateChangeManager {
   constructor() {
     stateChangeManager = stateChangeManager ? stateChangeManager : this;
-    stateChangeManager.state = this.getAppNewState();
+    stateChangeManager.appState = stateChangeManager.getAppNewState();
+    stateChangeManager.web3SuggesterState = stateChangeManager.getWeb3SuggesterNewState();
+    return stateChangeManager;
   }
 
   getAppNewState() {
     return TodoStore.getState();
+  }
+
+  getWeb3SuggesterNewState() {
+    return {};
   }
 
   updateInputValue(value) {
@@ -18,7 +24,7 @@ class StateChangeManager {
       name: value,
     });
 
-    return this.getAppNewState();
+    return stateChangeManager.getAppNewState();
   }
 
   addTodo(value) {
@@ -30,7 +36,7 @@ class StateChangeManager {
       },
     });
 
-    return this.getAppNewState();
+    return stateChangeManager.getAppNewState();
   }
 
   updateTodo(value) {
@@ -39,7 +45,7 @@ class StateChangeManager {
       name: value,
     });
 
-    return this.getAppNewState();
+    return stateChangeManager.getAppNewState();
   }
 
   editTodo(index) {
@@ -48,7 +54,7 @@ class StateChangeManager {
       index: index,
     });
 
-    return this.getAppNewState();
+    return stateChangeManager.getAppNewState();
   }
 
   deleteTodo(index) {
@@ -57,9 +63,9 @@ class StateChangeManager {
       index: index,
     });
 
-    return this.getAppNewState();
+    return stateChangeManager.getAppNewState();
   }
 }
 
-new StateChangeManager();
+stateChangeManager = new StateChangeManager();
 export default stateChangeManager;

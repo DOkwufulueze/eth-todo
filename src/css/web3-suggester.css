@@ -1,0 +1,13 @@
+.wrapper {
+  width: 70%;
+  height: auto;
+  text-align: center;
+  margin: auto;
+  background: #dcdede;
+  padding: 50px 0px;
+}
+
+.metamask-logo {
+  width: 300px;
+  height: auto;
+}

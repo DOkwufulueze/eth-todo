@@ -4,6 +4,42 @@
   margin: auto;
 }
 
+.eth-info {
+  clear: both;
+  width: 100%;
+  margin-top: 50px;
+  color: #4d4c49;
+}
+
+.eth-network {
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-top: 50px;
+  color: #4d4c49;
+}
+
+.eth-address {
+  clear: both;
+  float: left;
+  width: 100%;
+  color: #4d4c49;
+}
+
+.key {
+  width: 30%;
+  float: left;
+  clear: none;
+  text-align: left;
+}
+
+.value {
+  width: 65%;
+  float: left;
+  clear: none;
+  text-align: left;
+}
+
 .row {
   clear: both;
   width: 100%;
